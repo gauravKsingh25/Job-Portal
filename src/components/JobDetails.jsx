@@ -10,13 +10,16 @@ import {
   Clock,
 } from "lucide-react";
 
+// Memoizing JobDetails component to avoid unnecessary re-renders
 const JobDetails = memo(function JobDetails({ job, allJobs }) {
   if (!job) {
-    // Display all company logos and number of openings
+    // If no job is selected, show all companies and their job openings
     const companyOpenings = allJobs.reduce((acc, job) => {
       if (!acc[job.company]) {
+        // Create an entry for each company with its count and logo
         acc[job.company] = { count: 0, logo: job.companyImageUrl };
       }
+      // Increase the job count for the company
       acc[job.company].count++;
       return acc;
     }, {});
@@ -30,6 +33,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
               key={company}
               className="flex items-center space-x-2 p-2 border rounded"
             >
+              {/* Display company logo or fallback to a building icon */}
               {logo ? (
                 <img
                   src={logo}
@@ -42,7 +46,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
               <div>
                 <p className="font-semibold">{company}</p>
                 <p className="text-sm text-gray-600">
-                  {count} opening{count !== 1 ? "s" : ""}
+                  {count} opening{count !== 1 ? "s" : ""} available
                 </p>
               </div>
             </div>
@@ -54,6 +58,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
+      {/* Header with job title and company details */}
       <div className="bg-gradient-to-r from-indigo-600 to-cyan-600 text-white p-6">
         <div className="flex items-start justify-between">
           <div>
@@ -77,6 +82,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
         </div>
       </div>
 
+      {/* Job details section */}
       <div className="p-6 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -87,14 +93,14 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Experience</div>
+            <div className="text-sm text-gray-500">Experience Required</div>
             <div className="mt-1 flex items-center">
               <Clock className="h-4 w-4 mr-1 text-gray-400" />
               {job.experience}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Posted Date</div>
+            <div className="text-sm text-gray-500">Posted On</div>
             <div className="mt-1 flex items-center">
               <Calendar className="h-4 w-4 mr-1 text-gray-400" />
               {new Date(job.postedDateTime.$date).toLocaleDateString()}
@@ -109,6 +115,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
           </div>
         </div>
 
+        {/* Salary, Company website, Description, and other sections */}
         {job.salary && (
           <div>
             <div className="text-sm text-gray-500">Salary</div>
@@ -121,9 +128,7 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
 
         {job.company_url && (
           <div>
-            <h3 className="text-sm font-medium text-gray-500">
-              Company Website
-            </h3>
+            <h3 className="text-sm font-medium text-gray-500">Company Website</h3>
             <a
               href={job.company_url}
               target="_blank"
@@ -131,11 +136,12 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
               className="mt-1 flex items-center text-indigo-600 hover:text-indigo-500"
             >
               <Link2 className="h-4 w-4 mr-1" />
-              Visit company profile
+              Visit the company profile
             </a>
           </div>
         )}
 
+        {/* Job description and requirements */}
         <div>
           <h3 className="text-lg font-semibold mb-2">Job Description</h3>
           {job.description ? (
@@ -143,18 +149,14 @@ const JobDetails = memo(function JobDetails({ job, allJobs }) {
               {job.description}
             </p>
           ) : (
-            <p className="text-gray-500 italic">
-              No job description available for this position.
-            </p>
+            <p className="text-gray-500 italic">No description available yet.</p>
           )}
         </div>
 
         {job.requirements && (
           <div>
             <h3 className="text-lg font-semibold mb-2">Requirements</h3>
-            <p className="text-gray-700 whitespace-pre-wrap">
-              {job.requirements}
-            </p>
+            <p className="text-gray-700 whitespace-pre-wrap">{job.requirements}</p>
           </div>
         )}
 
